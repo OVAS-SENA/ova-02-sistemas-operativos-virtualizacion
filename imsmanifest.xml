@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="SENA_OVA-02_Virtualizacion_Ambiente205" version="1.0"
+          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                              http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+  <organizations default="SENA_ORG">
+    <organization identifier="SENA_ORG">
+      <title>OVA-02: Sistemas Operativos y Virtualización en el Ambiente 205</title>
+      <item identifier="ITEM_OVA02" identifierref="RES_OVA02">
+        <title>OVA-02: Sistemas Operativos y Virtualización en el Ambiente 205</title>
+        <adlcp:masteryscore>70</adlcp:masteryscore>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="RES_OVA02" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <file href="css/sena-theme.css"/>
+      <file href="css/components.css"/>
+      <file href="css/terminal-sim.css"/>
+      <file href="js/app.js"/>
+      <file href="js/evaluacion.js"/>
+      <file href="js/scorm.js"/>
+      <file href="js/terminal-sim.js"/>
+      <file href="assets/logos/sena-logo.svg"/>
+      <file href="assets/logos/sena-white.svg"/>
+      <file href="assets/fotos/01_instalacion_proxmox_ve9.jpg"/>
+      <file href="assets/fotos/02_repositorios_pve_nosubscription.jpg"/>
+      <file href="assets/fotos/03_configuracion_iommu_passthrough.jpg"/>
+      <file href="assets/fotos/04_vm100_windows11_rtx5080.jpg"/>
+      <file href="assets/fotos/05_vm101_ubuntu_cloudpanel.jpg"/>
+      <file href="assets/fotos/06_auditoria_nodo_proxmox.jpg"/>
+      <file href="assets/fotos/07_servicios_activos_pve.jpg"/>
+      <file href="assets/fotos/08_inferencia_ia_rtx5080.jpg"/>
+      <file href="assets/fotos/09_drivers_nvidia_studio_vm.jpg"/>
+      <file href="assets/fotos/10_aprendices_virtualizacion_ambiente205.jpg"/>
+    </resource>
+  </resources>
+</manifest>

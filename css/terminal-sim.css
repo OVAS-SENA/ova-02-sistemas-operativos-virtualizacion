@@ -1,0 +1,306 @@
+/* ==========================================================================
+   SENA OVA-02: SIMULADOR INTERACTIVO CLI PROXMOX VE 9 & TROUBLESHOOTING
+   ========================================================================== */
+
+.cli-container {
+  display: flex;
+  flex-direction: column;
+  background: #0f141c;
+  border: 1px solid #233142;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  margin: 20px 0;
+  font-family: var(--font-mono);
+}
+
+.cli-topbar {
+  background: #1a222f;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #28374a;
+}
+
+.cli-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #a0aec0;
+}
+
+.cli-status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #27c93f;
+  box-shadow: 0 0 8px #27c93f;
+  animation: pulse-green 2s infinite ease-in-out;
+}
+
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.9); }
+}
+
+.cli-window-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.cli-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.cli-screen {
+  background: #0c1017;
+  color: #e2e8f0;
+  padding: 20px;
+  min-height: 380px;
+  max-height: 520px;
+  overflow-y: auto;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  scroll-behavior: smooth;
+}
+
+.cli-output-log {
+  margin-bottom: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.cli-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #131923;
+  padding: 12px 20px;
+  border-top: 1px solid #233142;
+}
+
+.cli-prompt-label {
+  color: #50e5f9;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cli-input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.cli-input-field::placeholder {
+  color: #4a5568;
+}
+
+.cli-btn-execute {
+  background: var(--sena-green);
+  color: #ffffff;
+  border: none;
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-main);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.cli-btn-execute:hover {
+  background: var(--sena-green-dark);
+}
+
+.cli-toolbar-chips {
+  background: #161e2a;
+  padding: 12px 18px;
+  border-top: 1px solid #233142;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.cli-chip-label {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.cli-command-chip {
+  background: #202b3c;
+  color: #50e5f9;
+  border: 1px solid #334358;
+  padding: 5px 11px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cli-command-chip:hover {
+  background: var(--sena-green-dark);
+  color: #ffffff;
+  border-color: var(--sena-green);
+  transform: translateY(-1px);
+}
+
+.cli-command-chip .chip-tag {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  color: #ffffff;
+}
+
+/* Panel de Análisis y Troubleshooting */
+.troubleshoot-tabs-container {
+  margin-top: 24px;
+}
+
+.tab-nav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+.tab-btn-pill {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-btn-pill.active {
+  background: var(--sena-green);
+  color: #ffffff;
+  border-color: var(--sena-green);
+  box-shadow: 0 4px 10px rgba(57, 169, 0, 0.3);
+}
+
+.tab-panel-item {
+  display: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.tab-panel-item.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tarjetas de arquitectura de virtualización */
+.arch-diagram-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.arch-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.arch-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.arch-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+}
+
+.arch-layers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.arch-layer {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid transparent;
+}
+
+.layer-hw { background: #2d3748; color: #f7fafc; }
+.layer-hypervisor { background: #007832; color: #ffffff; border-color: #39a900; }
+.layer-host-os { background: #4a5568; color: #ffffff; }
+.layer-vm { background: #00304d; color: #ffffff; border-color: #50e5f9; }
+.layer-app { background: #f6f8fa; color: #2d3748; border-color: #cbd5e0; }
+[data-theme="dark"] .layer-app { background: #1a202c; color: #e2e8f0; border-color: #4a5568; }
+
+.param-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.88rem;
+}
+
+.param-table th, .param-table td {
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.param-table th {
+  background: var(--bg-surface);
+  color: var(--sena-blue);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .param-table th {
+  color: var(--sena-green);
+}

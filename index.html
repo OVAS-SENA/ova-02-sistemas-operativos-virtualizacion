@@ -1,0 +1,1560 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OVA-02: Sistemas Operativos y Virtualización en el Ambiente 205 | SENA Centro Minero</title>
+  
+  <!-- CSS del Ecosistema SENA y Terminal Simulador -->
+  <link rel="stylesheet" href="css/sena-theme.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/terminal-sim.css">
+  
+  <style>
+    /* Estilos específicos complementarios para la OVA-02 */
+    .tech-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    .tech-table th, .tech-table td {
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      text-align: left;
+    }
+    .tech-table th {
+      background: var(--bg-surface);
+      color: var(--sena-blue);
+      font-weight: 700;
+    }
+    [data-theme="dark"] .tech-table th {
+      color: var(--sena-green);
+    }
+    .tech-table tr:nth-child(even) {
+      background: var(--bg-surface);
+    }
+    .badge-chip {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-proxmox {
+      background: #E57000;
+      color: #FFF;
+    }
+    .badge-debian {
+      background: #D70A53;
+      color: #FFF;
+    }
+    .badge-nvidia {
+      background: #76B900;
+      color: #000;
+    }
+    .badge-ubuntu {
+      background: #E95420;
+      color: #FFF;
+    }
+    .badge-windows {
+      background: #0078D4;
+      color: #FFF;
+    }
+    .badge-kvm {
+      background: #00304D;
+      color: #FFF;
+    }
+    .matrix-box {
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin: 16px 0;
+      border: 1px solid var(--border-color);
+    }
+    .troubleshoot-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .troubleshoot-tag {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .tag-danger { background: #ffebee; color: #c62828; }
+    .tag-success { background: #e8f5e9; color: #2e7d32; }
+    .tag-warning { background: #fff8e1; color: #f57f17; }
+    [data-theme="dark"] .tag-danger { background: #3c1214; color: #ff8a80; }
+    [data-theme="dark"] .tag-success { background: #123315; color: #81c784; }
+    [data-theme="dark"] .tag-warning { background: #3e320f; color: #ffd54f; }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de Clasificación y Encabezado Institucional -->
+  <div class="classification-bar">
+    <span>SERVICIO NACIONAL DE APRENDIZAJE – SENA | REGIONAL BOYACÁ | CENTRO MINERO</span>
+    <span>PROYECTO SENNOVA MGA_2025_35_294 · AMBIENTE 205</span>
+  </div>
+
+  <header class="sena-header">
+    <a href="#" class="header-brand" data-target="intro">
+      <img src="assets/logos/sena-logo.svg" alt="SENA Logo" class="header-logo">
+      <div class="header-titles">
+        <span class="header-ova-badge">Objeto Virtual de Aprendizaje · OVA-02</span>
+        <h1 class="header-title">Sistemas Operativos y Virtualización en el Ambiente 205</h1>
+      </div>
+    </a>
+    
+    <div class="header-tools">
+      <button class="btn-icon" id="themeToggle" title="Cambiar a modo oscuro" aria-label="Cambiar tema">🌙</button>
+      <button class="btn-icon" id="menuToggle" title="Abrir menú" aria-label="Menú de navegación" style="display: none;">☰</button>
+    </div>
+
+    <div class="global-progress-bar" title="Progreso de avance en la OVA"></div>
+  </header>
+
+  <!-- Layout Principal con Barra Lateral y Área de Contenido -->
+  <div class="app-container">
+    
+    <!-- Barra Lateral de Navegación -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Ruta de Aprendizaje</div>
+        <div class="sidebar-subtitle">TSTI (233108) & TGRD (228183)</div>
+      </div>
+      
+      <nav class="nav-list">
+        <a href="#intro" class="nav-item active" data-target="intro">
+          <span class="nav-icon">📌</span>
+          <span>Introducción & RAP</span>
+          <span class="nav-badge-check">✓</span>
+        </a>
+        <a href="#tema1_hipervisores" class="nav-item" data-target="tema1_hipervisores">
+          <span class="nav-icon">⚙️</span>
+          <span>1. Hipervisores & Proxmox VE 9</span>
+          <span class="nav-badge-check">✓</span>
+        </a>
+        <a href="#tema2_instalacion_red" class="nav-item" data-target="tema2_instalacion_red">
+          <span class="nav-icon">🌐</span>
+          <span>2. Instalación & Red (vmbr0)</span>
+          <span class="nav-badge-check">✓</span>
+        </a>
+        <a href="#tema3_iommu_gpu" class="nav-item" data-target="tema3_iommu_gpu">
+          <span class="nav-icon">⚡</span>
+          <span>3. IOMMU & GPU Passthrough</span>
+          <span class="nav-badge-check">✓</span>
+        </a>
+        <a href="#tema4_vms" class="nav-item" data-target="tema4_vms">
+          <span class="nav-icon">🖥️</span>
+          <span>4. Despliegue VMs (100 & 101)</span>
+          <span class="nav-badge-check">✓</span>
+        </a>
+        <a href="#simulador_cli" class="nav-item" data-target="simulador_cli">
+          <span class="nav-icon">💻</span>
+          <span>5. Terminal CLI & Troubleshooting</span>
+          <span class="nav-badge-check">✓</span>
+        </a>
+        <a href="#galeria" class="nav-item" data-target="galeria">
+          <span class="nav-icon">📸</span>
+          <span>6. Galería Real Ambiente 205</span>
+          <span class="nav-badge-check">✓</span>
+        </a>
+        <a href="#evaluacion" class="nav-item" data-target="evaluacion">
+          <span class="nav-icon">📝</span>
+          <span>7. Evaluación & Certificado</span>
+          <span class="nav-badge-check">✓</span>
+        </a>
+        <a href="#glosario" class="nav-item" data-target="glosario">
+          <span class="nav-icon">📚</span>
+          <span>8. Glosario Técnico</span>
+          <span class="nav-badge-check">✓</span>
+        </a>
+        <a href="#sintesis_creditos" class="nav-item" data-target="sintesis_creditos">
+          <span class="nav-icon">🏛️</span>
+          <span>9. Síntesis & Créditos</span>
+          <span class="nav-badge-check">✓</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+
+      <!-- ===================================================================
+           SECCIÓN: INTRODUCCIÓN Y CONTEXTO CURRICULAR
+           =================================================================== -->
+      <section id="intro" class="content-section active">
+        <div class="hero-banner">
+          <span class="hero-tag">🎯 Objeto Virtual de Aprendizaje · SENA SENNOVA</span>
+          <h2 class="hero-title">Sistemas Operativos y Virtualización en el Ambiente 205</h2>
+          <p class="hero-subtitle">
+            Domina la arquitectura y despliegue de hipervisores de Tipo 1 (Bare-Metal) con <strong>Proxmox VE 9</strong> sobre <strong>Debian 13 (Trixie)</strong>, la segmentación de redes puente <code>vmbr0</code> con direccionamiento corporativo SENA (10.27.120.250/24), la configuración avanzada de <strong>IOMMU y GPU Passthrough dedicado</strong> para la tarjeta NVIDIA GeForce RTX 5080 de 16 GB GDDR7, y el aprovisionamiento de máquinas virtuales de alto rendimiento para Inteligencia Artificial y servicios telemáticos.
+          </p>
+
+          <div class="hero-meta-grid">
+            <div class="hero-meta-item">
+              <div class="hero-meta-icon">⏱️</div>
+              <div>
+                <div class="hero-meta-label">DURACIÓN ESTIMADA</div>
+                <div class="hero-meta-value">4 Horas Prácticas</div>
+              </div>
+            </div>
+            <div class="hero-meta-item">
+              <div class="hero-meta-icon">🎓</div>
+              <div>
+                <div class="hero-meta-label">PROGRAMAS SENA</div>
+                <div class="hero-meta-value">TSTI (233108) & TGRD (228183)</div>
+              </div>
+            </div>
+            <div class="hero-meta-item">
+              <div class="hero-meta-icon">📦</div>
+              <div>
+                <div class="hero-meta-label">FORMATO / ESTÁNDAR</div>
+                <div class="hero-meta-value">SCORM 1.2 Compatible</div>
+              </div>
+            </div>
+            <div class="hero-meta-item">
+              <div class="hero-meta-icon">📍</div>
+              <div>
+                <div class="hero-meta-label">UBICACIÓN / NODO</div>
+                <div class="hero-meta-value">Ambiente 205 · Servidor Bare-Metal</div>
+              </div>
+            </div>
+          
+            <div class="hero-meta-item">
+              <div class="hero-meta-icon">👨‍🏫</div>
+              <div>
+                <div class="hero-meta-label">INSTRUCTOR RESPONSABLE</div>
+                <div class="hero-meta-value">Diego Alonso Ojeda Medina - Instructor Sistemas - Centro Minero</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ficha de Vinculación Curricular -->
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">📋</div>
+              <div>
+                <h3 class="card-title">Ficha Técnica y Vinculación Curricular</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Alineación con el catálogo de formación profesional integral del SENA</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div>
+              <h4 style="color: var(--sena-green-dark); margin-bottom: 8px;">🎓 Programas de Formación Beneficiarios:</h4>
+              <ul style="padding-left: 20px; font-size: 0.92rem; line-height: 1.8;">
+                <li><strong>Técnico en Sistemas Teleinformáticos (Código: 233108)</strong>: Competencia en soporte a la infraestructura de TI, mantenimiento de servidores locales y gestión de sistemas operativos de red.</li>
+                <li><strong>Tecnólogo en Gestión de Redes de Datos (Código: 228183)</strong>: Competencia en administración de servicios de telecomunicaciones, virtualización empresarial, segmentación VLAN y direccionamiento de capa 2/3.</li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="color: var(--sena-blue); margin-bottom: 8px;">🎯 Resultados de Aprendizaje del Programa (RAP):</h4>
+              <ul style="padding-left: 20px; font-size: 0.92rem; line-height: 1.8;">
+                <li><strong>RAP 1:</strong> Implementar soluciones de virtualización tipo 1 (bare-metal) optimizando el uso de recursos de cómputo, almacenamiento y redes según requerimientos institucionales.</li>
+                <li><strong>RAP 2:</strong> Configurar subsistemas de traducción de hardware (IOMMU / VT-d / AMD-Vi) y asignación directa de periféricos PCIe (Passthrough) para cargas de procesamiento masivo.</li>
+                <li><strong>RAP 3:</strong> Desplegar y administrar servicios telemáticos en sistemas operativos Linux Server y Windows Pro integrando agentes de telemetría QEMU y políticas de red bridge.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="pager-buttons">
+          <div></div>
+          <button class="btn btn-primary btn-pager" data-target="tema1_hipervisores">Comenzar Tema 1: Hipervisores & Proxmox VE 9 →</button>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           TEMA 1: HIPERVISORES TIPO 1 VS TIPO 2 & PROXMOX VE 9
+           =================================================================== -->
+      <section id="tema1_hipervisores" class="content-section">
+        <div class="section-header">
+          <span class="badge-chip badge-proxmox">Tema 1</span>
+          <h2 style="font-size: 1.6rem; color: var(--text-primary); margin: 6px 0;">Hipervisores Tipo 1 vs Tipo 2 & Arquitectura Proxmox VE 9</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Fundamentos de virtualización de nivel empresarial, KVM/QEMU y núcleo Debian 13 (Trixie).</p>
+        </div>
+
+        <!-- Comparativa de Arquitectura de Hipervisores -->
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">⚖️</div>
+              <div>
+                <h3 class="card-title">Arquitectura Conceptual: Tipo 1 (Bare-Metal) vs Tipo 2 (Hosted)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Por qué el Ambiente 205 seleccionó Proxmox VE / KVM para cómputo de alto desempeño</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-diagram-grid">
+            <!-- Hipervisor Tipo 1 -->
+            <div class="arch-card" style="border-top: 4px solid var(--sena-green);">
+              <div class="arch-card-header">
+                <div>
+                  <h4 style="margin: 0; font-size: 1.1rem; color: var(--sena-green-dark);">Hipervisor Tipo 1 (Bare-Metal)</h4>
+                  <span class="arch-badge badge-proxmox">Proxmox VE 9 / KVM</span>
+                </div>
+              </div>
+              <div class="arch-layers">
+                <div class="arch-layer layer-app">Máquinas Virtuales (VM 100 Win11 / VM 101 Ubuntu)</div>
+                <div class="arch-layer layer-hypervisor">Hipervisor KVM / Núcleo Proxmox VE 9 (Anillo 0)</div>
+                <div class="arch-layer layer-hw">Hardware Físico: Intel Core Ultra 7 / DDR5 64GB / RTX 5080</div>
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+                <strong>Ventajas clave en el Ambiente 205:</strong> Se ejecuta directamente sobre el hardware físico. El hipervisor toma control exclusivo de las extensiones de procesador (Intel VT-x/VT-d o AMD SVM). <em>Overhead inferior al 1.5%</em>, latencias de milisegundos en I/O de disco y capacidad nativa de desviar buses PCIe completos mediante el controlador VFIO.
+              </p>
+            </div>
+
+            <!-- Hipervisor Tipo 2 -->
+            <div class="arch-card" style="border-top: 4px solid #718096;">
+              <div class="arch-card-header">
+                <div>
+                  <h4 style="margin: 0; font-size: 1.1rem; color: #4a5568;">Hipervisor Tipo 2 (Hosted / Alojado)</h4>
+                  <span class="arch-badge" style="background: #4a5568; color: #fff;">VirtualBox / VMware Workstation</span>
+                </div>
+              </div>
+              <div class="arch-layers">
+                <div class="arch-layer layer-app">Máquinas Virtuales de Prueba</div>
+                <div class="arch-layer layer-vm" style="background: #4a5568;">Software de Virtualización (Aplicación de usuario)</div>
+                <div class="arch-layer layer-host-os">Sistema Operativo Anfitrión (Windows / macOS / Ubuntu Desktop)</div>
+                <div class="arch-layer layer-hw">Hardware Físico del Equipo</div>
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+                <strong>Limitaciones técnicas:</strong> Debe solicitar recursos a través del planificador y la pila de controladores del sistema operativo base. Introduce una doble capa de traducción, degradación de memoria de hasta el 18%, latencias de interrupción impredecibles e imposibilidad absoluta de ceder una GPU dedicada por passthrough directo a nivel de silicio.
+              </p>
+            </div>
+          </div>
+
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Criterio Técnico</th>
+                <th>Hipervisor Tipo 1 (Proxmox VE 9 / KVM)</th>
+                <th>Hipervisor Tipo 2 (VirtualBox / Workstation)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Acceso al Hardware</strong></td>
+                <td>Directo en Ring 0 (Modo VMX Root)</td>
+                <td>Indirecto mediado por llamadas al kernel anfitrión</td>
+              </tr>
+              <tr>
+                <td><strong>Overhead de Cómputo CPU</strong></td>
+                <td>&lt; 1.5% (Casi imperceptible, ideal para IA)</td>
+                <td>8% a 22% (Dependiendo de la concurrencia y drivers)</td>
+              </tr>
+              <tr>
+                <td><strong>Passthrough de GPU PCIe</strong></td>
+                <td>Total y nativo mediante controladores <code>vfio-pci</code></td>
+                <td>No soportado o emulado mediante shaders 3D virtuales lentos</td>
+              </tr>
+              <tr>
+                <td><strong>Sistemas de Archivos</strong></td>
+                <td>OpenZFS 2.3 con compresión LZ4, TRIM y snapshots atómicos</td>
+                <td>Archivos monolíticos (.vdi, .vmdk) sobre sistema de archivos host</td>
+              </tr>
+              <tr>
+                <td><strong>Gestión y Automatización</strong></td>
+                <td>Web GUI nativa en puerto 8006, CLI <code>qm</code>/<code>pvesh</code> y API REST</td>
+                <td>Interfaz gráfica de escritorio local en ventana de usuario</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Arquitectura del Nodo Proxmox VE 9 sobre Debian 13 -->
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">🐧</div>
+              <div>
+                <h3 class="card-title">Arquitectura del Nodo Proxmox VE 9 sobre Debian 13 (Trixie)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Pila de software de bajo nivel instalada en la estación de trabajo del Ambiente 205</p>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size: 0.92rem; line-height: 1.7; color: var(--text-primary);">
+            La versión 9 de Proxmox VE implementada en el proyecto SENNOVA adopta como base el sistema operativo <strong>Debian 13 (Trixie)</strong> acompañado de un kernel empresarial optimizado <code>Linux 6.14.x-pve</code>. Este kernel incorpora soporte nativo para los aceleradores neuronales integrados (NPU), la programación híbrida de núcleos de rendimiento (P-Cores) y núcleos de eficiencia (E-Cores) de los procesadores Intel Core Ultra 7 265K, así como la compatibilidad con el bus <strong>PCI Express 5.0</strong>.
+          </p>
+
+          <div class="grid-3" style="margin-top: 16px;">
+            <div class="feature-item">
+              <div class="feature-icon">📁</div>
+              <div class="feature-title">pmxcfs (Cluster FS)</div>
+              <div class="feature-desc">Sistema de archivos distribuido respaldado por base de datos SQLite montado en <code>/etc/pve</code> con replicación en tiempo real y bloqueo mutuo.</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🛡️</div>
+              <div class="feature-title">OpenZFS 2.3 NVMe</div>
+              <div class="feature-desc">Pool de almacenamiento zfs pool sobre el SSD Samsung 990 PRO con checksums de 128 bits, protección contra corrupción silenciosa y discard continuo.</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🌐</div>
+              <div class="feature-title">ifupdown2 & SDN</div>
+              <div class="feature-desc">Pila de redes moderna escrita en Python que permite recargar interfaces y puentes virtuales en caliente sin reiniciar el servidor ni interrumpir las VMs.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pager-buttons">
+          <button class="btn btn-secondary btn-pager" data-target="intro">← Volver a Introducción</button>
+          <button class="btn btn-primary btn-pager" data-target="tema2_instalacion_red">Continuar a Tema 2: Instalación & Red →</button>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           TEMA 2: INSTALACIÓN, REPOSITORIOS Y RED
+           =================================================================== -->
+      <section id="tema2_instalacion_red" class="content-section">
+        <div class="section-header">
+          <span class="badge-chip badge-debian">Tema 2</span>
+          <h2 style="font-size: 1.6rem; color: var(--text-primary); margin: 6px 0;">Instalación, Repositorios y Configuración de Red</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Habilitación del repositorio sin suscripción, actualización atómica y arquitectura de puente vmbr0.</p>
+        </div>
+
+        <!-- Repositorios y Actualización -->
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">📦</div>
+              <div>
+                <h3 class="card-title">Gestión de Repositorios Oficiales Proxmox VE 9</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Eliminación de repositorios de pago y activación comunitaria 'pve-no-subscription'</p>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size: 0.92rem; line-height: 1.7; color: var(--text-primary);">
+            Al desplegar Proxmox VE en un centro de formación tecnológica pública como el SENA Centro Minero, el instalador configura por defecto el repositorio corporativo comercial (<code>pve-enterprise</code>), el cual requiere una clave de suscripción paga. Para mantener el nodo permanentemente actualizado con parches de seguridad y paquetes estables sin incurrir en bloqueos de autenticación <code>401 Unauthorized</code>, se debe comentar el repositorio comercial y habilitar la rama <strong>pve-no-subscription</strong>.
+          </p>
+
+          <div class="terminal-box">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <span class="terminal-dot dot-red"></span>
+                <span class="terminal-dot dot-yellow"></span>
+                <span class="terminal-dot dot-green"></span>
+              </div>
+              <span class="terminal-title">root@pve205:~# nano /etc/apt/sources.list.d/pve-no-subscription.list</span>
+              <button class="terminal-copy-btn">📋 Copiar</button>
+            </div>
+            <div class="terminal-body">
+<span class="t-comment"># 1. Desactivar repositorio enterprise</span>
+<span class="t-prompt">root@pve205:~#</span> <span class="t-cmd">sed -i -e 's/^deb/#deb/' /etc/apt/sources.list.d/pve-enterprise.list</span>
+
+<span class="t-comment"># 2. Agregar repositorio pve-no-subscription para Debian 13 (Trixie)</span>
+<span class="t-prompt">root@pve205:~#</span> <span class="t-cmd">cat &lt;&lt;EOF &gt; /etc/apt/sources.list.d/pve-no-subscription.list
+deb http://download.proxmox.com/debian/pve trixie pve-no-subscription
+EOF</span>
+
+<span class="t-comment"># 3. Actualizar la base de paquetes y aplicar dist-upgrade</span>
+<span class="t-prompt">root@pve205:~#</span> <span class="t-cmd">apt update && apt dist-upgrade -y</span>
+<span class="t-output">Leyendo lista de paquetes... Hecho
+Creando árbol de dependencias... Hecho
+Todos los paquetes están actualizados. Kernel pve 6.14.8-1-pve activo.</span>
+            </div>
+          </div>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">💡</div>
+            <div class="callout-body">
+              <div class="callout-title">Nota Técnica Pedagógica SENA:</div>
+              <div class="callout-text">
+                En Proxmox VE siempre debe utilizarse <code>apt dist-upgrade</code> (o <code>apt full-upgrade</code>) en lugar de un <code>apt upgrade</code> estándar, debido a que las dependencias críticas del núcleo (meta-paquetes de QEMU, ZFS y Ceph) requieren la instalación o reemplazo dinámico de paquetes dependientes.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Configuración de Red: Bridge vmbr0 y Migración de IP -->
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">🔌</div>
+              <div>
+                <h3 class="card-title">Infraestructura de Red Virtual: Bridge vmbr0 y Direccionamiento</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Conmutación virtual de capa 2 y migración a la subred institucional 10.27.120.250/24</p>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size: 0.92rem; line-height: 1.7; color: var(--text-primary);">
+            En la arquitectura del servidor Proxmox, las máquinas virtuales no se conectan directamente a la tarjeta de red física (NIC), sino a un <strong>puente virtual de Linux (Linux Bridge)</strong> denominado <code>vmbr0</code>. La interfaz física 2.5 GbE (<code>enp5s0</code>) opera como un puerto esclavo del puente sin dirección IP propia, permitiendo que tanto el hipervisor como todas las VMs compartan el mismo enlace físico al switch Ubiquiti del Ambiente 205 con aislamiento de dominios de difusión.
+          </p>
+
+          <div class="terminal-box">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <span class="terminal-dot dot-red"></span>
+                <span class="terminal-dot dot-yellow"></span>
+                <span class="terminal-dot dot-green"></span>
+              </div>
+              <span class="terminal-title">root@pve205:~# cat /etc/network/interfaces</span>
+              <button class="terminal-copy-btn">📋 Copiar</button>
+            </div>
+            <div class="terminal-body">
+auto lo
+iface lo inet loopback
+
+<span class="t-comment"># Interfaz física 2.5 GbE Intel/Realtek (sin IP directa)</span>
+iface enp5s0 inet manual
+
+<span class="t-comment"># Puente virtual primario de gestión y conmutación de VMs</span>
+auto vmbr0
+iface vmbr0 inet static
+	address 10.27.120.250/24
+	gateway 10.27.120.254
+	bridge-ports enp5s0
+	bridge-stp off
+	bridge-fd 0
+<span class="t-comment"># Parámetros DNS corporativos en /etc/resolv.conf:</span>
+<span class="t-comment"># nameserver 10.27.120.254 (Gateway MikroTik / DNS local Centro Minero)</span>
+<span class="t-comment"># nameserver 1.1.1.1 (Cloudflare DNS seguro)</span>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top: 16px;">
+            <div class="matrix-box">
+              <h4 style="color: var(--sena-blue); margin-bottom: 8px;">📡 Parámetros de Red del Nodo Proxmox:</h4>
+              <ul style="font-size: 0.88rem; line-height: 1.8; padding-left: 18px;">
+                <li><strong>Dirección IP del Hipervisor:</strong> <code>10.27.120.250</code></li>
+                <li><strong>Máscara de Subred:</strong> <code>255.255.255.0 (/24)</code></li>
+                <li><strong>Puerta de Enlace (Router MikroTik):</strong> <code>10.27.120.254</code></li>
+                <li><strong>Puerto de Administración Web GUI:</strong> <code>8006 (HTTPS)</code></li>
+                <li><strong>URL de Acceso:</strong> <code>https://10.27.120.250:8006/</code></li>
+              </ul>
+            </div>
+            <div class="matrix-box">
+              <h4 style="color: var(--sena-green-dark); margin-bottom: 8px;">⚙️ Configuración Netplan YAML (VMs Ubuntu):</h4>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 6px;">Archivo <code>/etc/netplan/00-installer-config.yaml</code> en las VMs:</p>
+              <pre style="font-family: var(--font-mono); font-size: 0.82rem; background: var(--bg-card); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); line-height: 1.4;">
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp1s0:
+      addresses: [10.27.120.251/24]
+      routes:
+        - to: default
+          via: 10.27.120.254
+      nameservers:
+        addresses: [10.27.120.254, 1.1.1.1]</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="pager-buttons">
+          <button class="btn btn-secondary btn-pager" data-target="tema1_hipervisores">← Volver a Tema 1</button>
+          <button class="btn btn-primary btn-pager" data-target="tema3_iommu_gpu">Continuar a Tema 3: IOMMU & GPU Passthrough →</button>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           TEMA 3: IOMMU & PASSTHROUGH GPU RTX 5080 + USB FÍSICO
+           =================================================================== -->
+      <section id="tema3_iommu_gpu" class="content-section">
+        <div class="section-header">
+          <span class="badge-chip badge-nvidia">Tema 3</span>
+          <h2 style="font-size: 1.6rem; color: var(--text-primary); margin: 6px 0;">IOMMU y Passthrough Dedicado de GPU RTX 5080</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Desvío de silicio a espacio de usuario mediante VFIO, aislamiento de interrupciones y solución a pantallas negras.</p>
+        </div>
+
+        <!-- Concepto de IOMMU y Passthrough -->
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">⚡</div>
+              <div>
+                <h3 class="card-title">Fundamento Técnico del IOMMU (Intel VT-d / AMD-Vi)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Traducción y protección de accesos directos a memoria (DMA) por hardware</p>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size: 0.92rem; line-height: 1.7; color: var(--text-primary);">
+            La tecnología <strong>IOMMU (Input-Output Memory Management Unit)</strong> permite conectar un dispositivo físico de expansión PCIe (como la tarjeta gráfica NVIDIA GeForce RTX 5080 o una controladora USB) directamente al espacio de memoria virtual de una máquina invitada. La IOMMU traduce las direcciones físicas de bus DMA en direcciones de memoria virtual de la VM, garantizando que una tarjeta gráfica no pueda corromper la memoria del hipervisor ni la de otras máquinas concurrentes.
+          </p>
+
+          <div class="stepper">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <div class="step-title">Habilitación de Parámetros en el Gestor de Arranque GRUB</div>
+                <div class="step-desc">
+                  Se edita <code>/etc/default/grub</code> para incorporar los parámetros de kernel:
+                  <div style="background: var(--bg-surface); font-family: var(--font-mono); padding: 8px 12px; border-radius: 4px; margin-top: 6px; border: 1px solid var(--border-color); font-size: 0.84rem;">
+                    GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt video=efifb:off,vesafb:off"
+                  </div>
+                  El parámetro <code>intel_iommu=on</code> inicializa las tablas DMAR en procesadores Intel; <code>iommu=pt</code> activa el modo passthrough directo para prevenir overhead en dispositivos no redirigidos; y <code>video=efifb:off</code> libera el framebuffer UEFI para que la GPU no sea retenida por el monitor local. Luego se ejecuta <code>update-grub</code>.
+                </div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <div class="step-title">Carga de Módulos del Kernel VFIO en el Arranque</div>
+                <div class="step-desc">
+                  Se agregan al archivo <code>/etc/modules</code> los módulos encargados del control de dispositivos a nivel de usuario:
+                  <code style="display: block; margin-top: 4px; font-weight: 600;">vfio<br>vfio_iommu_type1<br>vfio_pci<br>vfio_virqfd</code>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <div class="step-title">Blacklist de Controladores Gráficos del Sistema Anfitrión</div>
+                <div class="step-desc">
+                  Para que el kernel de Debian no intente inicializar la RTX 5080 con drivers de pantalla genéricos, se crea <code>/etc/modprobe.d/pve-blacklist.conf</code> conteniendo:
+                  <code style="display: block; margin-top: 4px; font-weight: 600;">blacklist nouveau<br>blacklist nvidia<br>blacklist nvidiafb<br>blacklist nvidia_drm</code>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <div class="step-title">Vinculación de Vendor y Device IDs al Driver vfio-pci</div>
+                <div class="step-desc">
+                  Se identifican los IDs PCIe mediante <code>lspci -nn | grep -i nvidia</code>. La RTX 5080 de Gigabyte posee el ID <code>10de:2c02</code> (controlador de video) y <code>10de:22e9</code> (controlador de audio HDMI). Se define en <code>/etc/modprobe.d/vfio.conf</code>:
+                  <div style="background: var(--bg-surface); font-family: var(--font-mono); padding: 8px 12px; border-radius: 4px; margin-top: 6px; border: 1px solid var(--border-color); font-size: 0.84rem;">
+                    options vfio-pci ids=10de:2c02,10de:22e9 disable_vga=1
+                  </div>
+                  Posteriormente se regenera el sistema de archivos inicial con <code>update-initramfs -u -k all</code> y se reinicia el nodo.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Solución a Problemas Reales: Pantalla Congelada y USB Passthrough -->
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">🛠️</div>
+              <div>
+                <h3 class="card-title">Resolución Técnica de Desafíos Críticos Documentados</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Innovaciones aplicadas en el Ambiente 205 para garantizar estabilidad del 100%</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion">
+            <div class="accordion-item active">
+              <div class="accordion-header">
+                <span style="font-weight: 600;">🚨 Desafío 1: Solución a la Pantalla Congelada / Freeze en VM al activar GPU</span>
+                <span class="accordion-icon">▾</span>
+              </div>
+              <div class="accordion-body">
+                <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+                  <strong>Diagnóstico del Proyecto:</strong> Cuando se asigna una GPU moderna de alta potencia (RTX 5080) como adaptador secundario mientras coexiste una tarjeta virtual emulada (VGA QXL o VirtIO), el instalador de Windows y el driver de NVIDIA intentan utilizar ambos dispositivos simultáneamente, produciendo un conflicto de asignación de regiones de memoria BAR (Base Address Registers) y congelando el arranque con el mensaje <em>Display freeze</em>.
+                </p>
+                <div class="callout callout-success" style="margin-top: 10px;">
+                  <div class="callout-icon">✅</div>
+                  <div class="callout-body">
+                    <div class="callout-title">Solución de Ingeniería Aplicada:</div>
+                    <div class="callout-text">
+                      Se configura la pantalla virtual como <strong>display: none</strong> (o <code>vga: none</code>) en la VM, y se establece la directiva <code>x-vga=1</code> en el hardware PCIe: <code>hostpci0: 0000:01:00,pcie=1,x-vga=1</code>. De este modo, la RTX 5080 asume el rol de <em>Primary GPU</em>, emitiendo la señal de video directamente por sus conectores físicos HDMI y DisplayPort conectados al Smart Monitor Samsung, permitiendo visualizar la BIOS UEFI de la VM y el escritorio de Windows con aceleración pura por hardware sin emulación intermedia.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <div class="accordion-header">
+                <span style="font-weight: 600;">🔌 Desafío 2: Passthrough de Controladora USB Física para Periféricos de Entrada</span>
+                <span class="accordion-icon">▾</span>
+              </div>
+              <div class="accordion-body">
+                <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+                  <strong>Diagnóstico y Ventaja:</strong> Si bien Proxmox permite desviar puertos USB individuales por software, este mecanismo introduce latencia de emulación (jitter) que perjudica el manejo de alta precisión en programas de modelado 3D, edición CAD y videojuegos de simulación técnica.
+                </p>
+                <div class="callout callout-info" style="margin-top: 10px;">
+                  <div class="callout-icon">🎯</div>
+                  <div class="callout-body">
+                    <div class="callout-title">Implementación Técnica en el Servidor 205:</div>
+                    <div class="callout-text">
+                      Se identificó en el bus PCIe la controladora física USB dedicada (o tarjeta controladora PCIe USB complementaria) y se asignó en bloque a la VM 100 mediante <code>hostpci1: 0000:08:00,pcie=1</code>. Esto otorga al sistema Windows 11 acceso nativo directo a los puertos USB físicos traseros del gabinete, permitiendo conectar el teclado inalámbrico Logitech G515, el ratón ergonómico MX Master y unidades flash de alta velocidad sin intervención del hipervisor.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pager-buttons">
+          <button class="btn btn-secondary btn-pager" data-target="tema2_instalacion_red">← Volver a Tema 2</button>
+          <button class="btn btn-primary btn-pager" data-target="tema4_vms">Continuar a Tema 4: Despliegue de VMs →</button>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           TEMA 4: DESPLIEGUE DE MÁQUINAS VIRTUALES DEL AMBIENTE 205
+           =================================================================== -->
+      <section id="tema4_vms" class="content-section">
+        <div class="section-header">
+          <span class="badge-chip badge-windows">Tema 4</span>
+          <h2 style="font-size: 1.6rem; color: var(--text-primary); margin: 6px 0;">Despliegue de Máquinas Virtuales en el Ambiente 205</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">VM 100 Windows 11 con NVIDIA Studio & VM 101 Ubuntu Server 24.04 con CloudPanel y MariaDB 11.4.</p>
+        </div>
+
+        <!-- VM 100: Windows 11 Admin para IA y Diseño -->
+        <div class="sena-card" style="border-left: 4px solid #0078D4;">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon" style="background: #e6f0fa; color: #0078D4;">🖥️</div>
+              <div>
+                <h3 class="card-title">VM 100: Windows 11 Pro Admin (IA, Diseño & Renderizado 3D)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Estación virtual de máximo cómputo gráfico con Passthrough completo de la RTX 5080</p>
+              </div>
+            </div>
+            <span class="badge-chip badge-windows">VMID 100</span>
+          </div>
+
+          <p style="font-size: 0.92rem; line-height: 1.7; color: var(--text-primary);">
+            La máquina virtual <strong>VM 100</strong> fue diseñada específicamente para satisfacer las demandas pedagógicas de modelado asistido por computadora (CAD), generación audiovisual y experimentación de Inteligencia Artificial Generativa local en los programas del SENA.
+          </p>
+
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Parámetro QEMU</th>
+                <th>Valor de Configuración</th>
+                <th>Justificación Técnica en el Proyecto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Tipo de Máquina (Machine)</strong></td>
+                <td><code>q35 (PCIe nativo)</code></td>
+                <td>Habilita la topología de bus PCIe moderna requerida por tarjetas gráficas de última generación.</td>
+              </tr>
+              <tr>
+                <td><strong>BIOS UEFI</strong></td>
+                <td><code>OVMF (UEFI) + TPM 2.0</code></td>
+                <td>Cumple con los requisitos obligatorios de seguridad y Secure Boot de Windows 11.</td>
+              </tr>
+              <tr>
+                <td><strong>Procesador (CPU)</strong></td>
+                <td><code>host,hidden=1,flags=+kvm_pv_unhalt;+kvm_pv_eoi</code> (16 Cores)</td>
+                <td>Expone las instrucciones nativas AVX-512 y AMX, ocultando la firma del hipervisor para evitar errores en drivers propietarios.</td>
+              </tr>
+              <tr>
+                <td><strong>Memoria RAM</strong></td>
+                <td><code>32.768 MB (32 GB DDR5 6000 MT/s)</code></td>
+                <td>Garantiza suficiente memoria para cargar modelos de lenguaje de gran tamaño (LLMs) y texturas pesadas.</td>
+              </tr>
+              <tr>
+                <td><strong>Acelerador GPU</strong></td>
+                <td><code>hostpci0: 0000:01:00,pcie=1,x-vga=1</code></td>
+                <td>Asigna en exclusividad los 16 GB de VRAM GDDR7 de la RTX 5080 Gigabyte con enlace PCIe 5.0.</td>
+              </tr>
+              <tr>
+                <td><strong>Controlador de Video</strong></td>
+                <td><code>vga: none</code></td>
+                <td>Desactiva el display emulado para prevenir cuelgues de pantalla y habilitar salida física directa.</td>
+              </tr>
+              <tr>
+                <td><strong>Software & Drivers</strong></td>
+                <td>NVIDIA Studio Driver v616.56 + LM Studio</td>
+                <td>Optimizado para inferencia de modelos como Google Gemma y Meta Llama a más de 85 tokens/segundo.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- VM 101: Ubuntu Server 24.04 LTS con CloudPanel -->
+        <div class="sena-card" style="border-left: 4px solid #E95420;">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon" style="background: #fdf0eb; color: #E95420;">🐧</div>
+              <div>
+                <h3 class="card-title">VM 101: Ubuntu Server 24.04 LTS (Servicios Telemáticos & CloudPanel)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Servidor de aplicaciones web, bases de datos y microservicios telemáticos del ambiente</p>
+              </div>
+            </div>
+            <span class="badge-chip badge-ubuntu">VMID 101</span>
+          </div>
+
+          <p style="font-size: 0.92rem; line-height: 1.7; color: var(--text-primary);">
+            La máquina virtual <strong>VM 101</strong> aloja la infraestructura de servidores de desarrollo y pruebas para los aprendices del Tecnólogo en Gestión de Redes y el Técnico en Sistemas Teleinformáticos. Incorpora la pila optimizada <strong>CloudPanel</strong> sobre Ubuntu 24.04 LTS con soporte a largo plazo.
+          </p>
+
+          <div class="grid-4" style="margin: 16px 0;">
+            <div class="feature-item">
+              <div class="feature-icon">⚡</div>
+              <div class="feature-title">Nginx Proxy</div>
+              <div class="feature-desc">Servidor web inverso de ultra alto rendimiento con soporte HTTP/3, compresión Brotli y certificados SSL automáticos.</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🗄️</div>
+              <div class="feature-title">MariaDB 11.4</div>
+              <div class="feature-desc">Motor relacional optimizado con buffers InnoDB en memoria RAM para transacciones masivas y talleres de bases de datos.</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🚀</div>
+              <div class="feature-title">Redis Cache</div>
+              <div class="feature-desc">Almacén de datos en memoria para caché de sesiones de usuario y optimización de microservicios telemáticos.</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🤖</div>
+              <div class="feature-title">Guest Agent</div>
+              <div class="feature-desc">Paquete <code>qemu-guest-agent</code> para congelar el sistema de archivos durante backups y sincronización de red.</div>
+            </div>
+          </div>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">ℹ️</div>
+            <div class="callout-body">
+              <div class="callout-title">Importancia del QEMU Guest Agent en Ambas VMs:</div>
+              <div class="callout-text">
+                El agente de invitados se comunica mediante un canal serial virtual (VirtIO-serial) con el hipervisor Proxmox. Facilita obtener las direcciones IP dinámicas asignadas en tiempo real sin abrir la consola, realizar apagados seguros (ACPI shutdown limpio) evitando corrupción de bases de datos y ejecutar copias de seguridad consistentes mediante snapshots con quiescing de VSS en Windows y fsfreeze en Linux.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pager-buttons">
+          <button class="btn btn-secondary btn-pager" data-target="tema3_iommu_gpu">← Volver a Tema 3</button>
+          <button class="btn btn-primary btn-pager" data-target="simulador_cli">Ir a Herramienta Interactiva: Terminal CLI →</button>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           HERRAMIENTA INTERACTIVA: TERMINAL CLI PROXMOX VE 9 & TROUBLESHOOTING
+           =================================================================== -->
+      <section id="simulador_cli" class="content-section">
+        <div class="section-header">
+          <span class="badge-chip badge-proxmox">Herramienta Interactiva</span>
+          <h2 style="font-size: 1.6rem; color: var(--text-primary); margin: 6px 0;">Terminal Interactiva CLI Proxmox VE 9 & Troubleshooting Lab</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Experimenta con los comandos reales de verificación del hipervisor y explora la resolución de fallas reales.</p>
+        </div>
+
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">💻</div>
+              <div>
+                <h3 class="card-title">Emulador de Consola Web Shell Proxmox VE 9</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Escribe los comandos en la terminal o haz clic en las fichas rápidas para ejecutar y analizar la salida</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Componente de Terminal CLI -->
+          <div class="cli-container">
+            <div class="cli-topbar">
+              <div class="cli-status">
+                <span class="cli-status-indicator"></span>
+                <span>pve205 · Proxmox VE 9.2 (x86_64 / Linux 6.14.8-1-pve) · SSH TLS v1.3</span>
+              </div>
+              <div class="cli-window-controls">
+                <span class="cli-dot dot-red"></span>
+                <span class="cli-dot dot-yellow"></span>
+                <span class="cli-dot dot-green"></span>
+              </div>
+            </div>
+
+            <!-- Fichas de Comandos Rápidos -->
+            <div class="cli-toolbar-chips">
+              <span class="cli-chip-label">Comandos sugeridos:</span>
+              <button type="button" class="cli-command-chip" data-cmd="dmesg | grep -e DMAR -e IOMMU">
+                <span class="chip-tag">Kernel</span> dmesg VT-d
+              </button>
+              <button type="button" class="cli-command-chip" data-cmd="lspci -nnk | grep -i nvidia">
+                <span class="chip-tag">PCIe</span> lspci RTX 5080
+              </button>
+              <button type="button" class="cli-command-chip" data-cmd="cat /etc/default/grub">
+                <span class="chip-tag">Config</span> cat grub
+              </button>
+              <button type="button" class="cli-command-chip" data-cmd="qm config 100">
+                <span class="chip-tag">VM 100</span> qm config 100
+              </button>
+              <button type="button" class="cli-command-chip" data-cmd="pveversion -v">
+                <span class="chip-tag">Versión</span> pveversion -v
+              </button>
+              <button type="button" class="cli-command-chip" data-cmd="ip a">
+                <span class="chip-tag">Red</span> ip a (vmbr0)
+              </button>
+              <button type="button" class="cli-command-chip" data-cmd="qm list">
+                <span class="chip-tag">VMs</span> qm list
+              </button>
+              <button type="button" class="cli-command-chip" data-cmd="pvesm status">
+                <span class="chip-tag">ZFS</span> pvesm status
+              </button>
+              <button type="button" class="cli-command-chip" data-cmd="help">
+                <span class="chip-tag">Ayuda</span> help
+              </button>
+            </div>
+
+            <!-- Pantalla de la Terminal -->
+            <div class="cli-screen" id="cliScreen">
+              <div style="color: #A0AEC0; margin-bottom: 12px;">
+                ========================================================================<br>
+                SISTEMA OPERATIVO PROXMOX VE 9.2 (DEBIAN 13 TRIXIE) · AMBIENTE 205<br>
+                Servicio Nacional de Aprendizaje SENA · Centro Minero Sogamoso<br>
+                Escribe un comando o pulsa un botón rápido arriba para interactuar.<br>
+                ========================================================================
+              </div>
+              <div style="color: #39A900; font-weight: 600;">
+                root@pve205:~# <span style="color: #FFF;">pveversion -v</span>
+              </div>
+              <div class="cli-output-log">proxmox-ve: 9.2-1 (running kernel: 6.14.8-1-pve)
+pve-manager: 9.2-4 (running version: 9.2-4/abc8921)
+proxmox-kernel-helper: 9.0-2
+pve-kernel-6.14: 6.14.8-1
+qemu-server: 9.0.8
+zfsutils-linux: 2.3.0-pve1</div>
+            </div>
+
+            <!-- Fila de Entrada de Comandos -->
+            <div class="cli-input-row">
+              <span class="cli-prompt-label">root@pve205:~#</span>
+              <input type="text" id="cliInput" class="cli-input-field" placeholder="Escribe un comando (ej: qm config 100, ip a, clear)..." autocomplete="off" spellcheck="false" />
+              <button type="button" id="cliBtnExecute" class="cli-btn-execute">▶ Ejecutar</button>
+            </div>
+          </div>
+
+          <!-- Inspector Técnico del Comando Seleccionado -->
+          <div class="matrix-box" id="cmdInspectorBox" style="border-left: 4px solid var(--sena-green);">
+            <h4 id="cmdDetailTitle" style="color: var(--sena-green-dark); margin-bottom: 6px;">
+              <span style="color: var(--sena-green);">[CLI Inspector]</span> Paquetes y Versiones del Clúster Proxmox VE 9
+            </h4>
+            <div id="cmdDetailDesc" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+              <p>Informa sobre la pila de software del hipervisor: Proxmox VE 9.2 sobre kernel Linux 6.14 optimizado con soporte para la microarquitectura Intel Core Ultra / Arrow Lake y AMD Zen 5, QEMU 9.0, OpenZFS 2.3 y el motor de red ifupdown2.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestañas de Resolución de Fallas Reales (Troubleshooting Lab) -->
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">🔬</div>
+              <div>
+                <h3 class="card-title">Laboratorio de Resolución de Fallas Reales (Troubleshooting Matrix)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Problemas encontrados y resueltos durante la ejecución del proyecto en el Centro Minero</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="troubleshoot-tabs-container">
+            <div class="tab-nav-bar">
+              <button type="button" class="tab-btn-pill active" data-tab="tab_falla1">
+                <span>⚠️ Caso 1: Error Code 43 (GPU NVIDIA)</span>
+              </button>
+              <button type="button" class="tab-btn-pill" data-tab="tab_falla2">
+                <span>⚠️ Caso 2: Freeze / Pantalla en Negro en VM</span>
+              </button>
+              <button type="button" class="tab-btn-pill" data-tab="tab_falla3">
+                <span>⚠️ Caso 3: Pérdida de Red en Migración IP</span>
+              </button>
+              <button type="button" class="tab-btn-pill" data-tab="tab_falla4">
+                <span>⚠️ Caso 4: IOMMU Grouping Compartido</span>
+              </button>
+            </div>
+
+            <!-- Falla 1 -->
+            <div class="tab-panel-item active" id="tab_falla1">
+              <div class="troubleshoot-header">
+                <span class="troubleshoot-tag tag-danger">SÍNTOMA TÉCNICO</span>
+                <h4 style="margin: 0; color: var(--text-primary);">Windows 11 muestra triángulo amarillo con Código de Error 43 en la GPU RTX 5080</h4>
+              </div>
+              <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+                <strong>Causa Raíz:</strong> Los controladores gráficos de NVIDIA detectan que se están ejecutando bajo un hipervisor virtualizado leyendo los registros MSR del procesador y las firmas de hipervisor KVM, procediendo a apagar el dispositivo por software.
+              </p>
+              <div class="callout callout-success" style="margin-top: 12px;">
+                <div class="callout-icon">✅</div>
+                <div class="callout-body">
+                  <div class="callout-title">Procedimiento Correctivo Documentado:</div>
+                  <div class="callout-text">
+                    Editar el archivo de configuración <code>/etc/pve/qemu-server/100.conf</code> y configurar:
+                    <ul style="margin: 6px 0 0 16px; padding: 0;">
+                      <li><code>cpu: host,hidden=1,flags=+kvm_pv_unhalt;+kvm_pv_eoi</code> (Oculta la firma del hipervisor a las llamadas del driver).</li>
+                      <li>Definir la GPU como primaria con <code>hostpci0: 0000:01:00,pcie=1,x-vga=1</code>.</li>
+                      <li>Asegurarse de que el BIOS de la VM sea <code>OVMF (UEFI)</code> y no SeaBIOS antiguo.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Falla 2 -->
+            <div class="tab-panel-item" id="tab_falla2">
+              <div class="troubleshoot-header">
+                <span class="troubleshoot-tag tag-danger">SÍNTOMA TÉCNICO</span>
+                <h4 style="margin: 0; color: var(--text-primary);">El host Proxmox se bloquea o la VM no muestra señal al arrancar</h4>
+              </div>
+              <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+                <strong>Causa Raíz:</strong> Durante el POST del servidor, el framebuffer EFI del kernel de Linux (<code>efifb</code>) se apodera de la memoria de video (VRAM) de la única tarjeta gráfica del sistema. Al arrancar la VM, QEMU intenta reclamar la GPU por VFIO, generando una condición de carrera y un bloqueo completo del kernel (kernel panic o freeze).
+              </p>
+              <div class="callout callout-success" style="margin-top: 12px;">
+                <div class="callout-icon">✅</div>
+                <div class="callout-body">
+                  <div class="callout-title">Procedimiento Correctivo Documentado:</div>
+                  <div class="callout-text">
+                    Inhabilitar el framebuffer del host en <code>/etc/default/grub</code> agregando <code>video=efifb:off,vesafb:off</code> y ejecutar <code>update-grub</code>. Adicionalmente, en la configuración de la VM 100 se debe configurar estrictamente <code>vga: none</code> para que no se intente levantar una pantalla emulada simultánea.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Falla 3 -->
+            <div class="tab-panel-item" id="tab_falla3">
+              <div class="troubleshoot-header">
+                <span class="troubleshoot-tag tag-warning">SÍNTOMA TÉCNICO</span>
+                <h4 style="margin: 0; color: var(--text-primary);">Pérdida total de conexión web GUI tras cambiar la IP inicial a 10.27.120.250</h4>
+              </div>
+              <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+                <strong>Causa Raíz:</strong> Al migrar de la IP temporal de laboratorio (<code>10.230.191.250</code>) a la IP institucional del Centro Minero (<code>10.27.120.250</code>), se omitió actualizar el archivo <code>/etc/hosts</code>. El servicio de clúster <code>pve-cluster</code> no puede resolver el nombre del propio nodo (pve205) a su IP local, provocando que <code>pvedaemon</code> y el servidor web en el puerto 8006 no inicien.
+              </p>
+              <div class="callout callout-success" style="margin-top: 12px;">
+                <div class="callout-icon">✅</div>
+                <div class="callout-body">
+                  <div class="callout-title">Procedimiento Correctivo Documentado:</div>
+                  <div class="callout-text">
+                    Verificar que la línea en <code>/etc/hosts</code> apunte exactamente a la nueva IP: <code>10.27.120.250 pve205.centro-minero.sena.local pve205</code>, y recargar la red con <code>ifreload -a</code> o <code>systemctl restart networking</code>.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Falla 4 -->
+            <div class="tab-panel-item" id="tab_falla4">
+              <div class="troubleshoot-header">
+                <span class="troubleshoot-tag tag-warning">SÍNTOMA TÉCNICO</span>
+                <h4 style="margin: 0; color: var(--text-primary);">La GPU comparte IOMMU Group con controladores SATA o puertos del chipset</h4>
+              </div>
+              <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+                <strong>Causa Raíz:</strong> La tarjeta gráfica fue instalada en una ranura PCIe secundaria conectada a través de las pistas del chipset (PCH) en lugar de las líneas directas del procesador (PEG - PCI Express Graphics).
+              </p>
+              <div class="callout callout-success" style="margin-top: 12px;">
+                <div class="callout-icon">✅</div>
+                <div class="callout-body">
+                  <div class="callout-title">Procedimiento Correctivo Documentado:</div>
+                  <div class="callout-text">
+                    Reubicar físicamente la tarjeta RTX 5080 en la ranura <strong>PCI_E1 principal (PCIe 5.0 x16 directa a la CPU)</strong>. Esto garantiza que la tarjeta gráfica y su audio HD queden aislados en un grupo IOMMU exclusivo (ej: Group 17) sin compartir bus con ningún otro periférico del sistema.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pager-buttons">
+          <button class="btn btn-secondary btn-pager" data-target="tema4_vms">← Volver a Tema 4</button>
+          <button class="btn btn-primary btn-pager" data-target="galeria">Continuar a Galería Fotográfica Real →</button>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SECCIÓN: GALERÍA FOTOGRÁFICA REAL AMBIENTE 205
+           =================================================================== -->
+      <section id="galeria" class="content-section">
+        <div class="section-header">
+          <span class="badge-chip badge-proxmox">Evidencias Reales</span>
+          <h2 style="font-size: 1.6rem; color: var(--text-primary); margin: 6px 0;">Galería Técnica Fotográfica Real del Ambiente 205</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Registro fotográfico testimonial de la instalación, configuración y auditoría en el Centro Minero Sogamoso.</p>
+        </div>
+
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">📸</div>
+              <div>
+                <h3 class="card-title">Evidencias del Proceso de Virtualización y Puesta en Producción</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Haz clic en cualquier imagen para abrir el visor en alta definición con su ficha técnica</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="photo-grid">
+            <!-- Foto 1 -->
+            <div class="photo-card">
+              <div class="photo-wrapper">
+                <img src="assets/fotos/01_instalacion_proxmox_ve9.jpg" alt="Instalación Proxmox VE 9">
+                <span class="photo-badge">01 · Instalación</span>
+              </div>
+              <div class="photo-caption">
+                <strong>Fase de Instalación Proxmox VE 9.2:</strong> Despliegue del instalador gráfico sobre la unidad NVMe Samsung 990 PRO de 2 TB con sistema de particionado ZFS.
+              </div>
+            </div>
+
+            <!-- Foto 2 -->
+            <div class="photo-card">
+              <div class="photo-wrapper">
+                <img src="assets/fotos/02_repositorios_pve_nosubscription.jpg" alt="Configuración de Repositorios">
+                <span class="photo-badge">02 · Repositorios</span>
+              </div>
+              <div class="photo-caption">
+                <strong>Habilitación pve-no-subscription:</strong> Edición de la lista de repositorios para garantizar actualizaciones comunitarias estables y seguras en Debian 13.
+              </div>
+            </div>
+
+            <!-- Foto 3 -->
+            <div class="photo-card">
+              <div class="photo-wrapper">
+                <img src="assets/fotos/03_configuracion_iommu_passthrough.jpg" alt="Configuración IOMMU Passthrough">
+                <span class="photo-badge">03 · IOMMU / VFIO</span>
+              </div>
+              <div class="photo-caption">
+                <strong>Ajuste de IOMMU y Drivers VFIO:</strong> Declaración de Vendor/Device IDs de la RTX 5080 y desactivación de controladores gráficos del anfitrión.
+              </div>
+            </div>
+
+            <!-- Foto 4 -->
+            <div class="photo-card">
+              <div class="photo-wrapper">
+                <img src="assets/fotos/04_vm100_windows11_rtx5080.jpg" alt="VM 100 Windows 11">
+                <span class="photo-badge">04 · VM 100 Win11</span>
+              </div>
+              <div class="photo-caption">
+                <strong>VM 100 con Passthrough Activo:</strong> Escritorio de Windows 11 ejecutándose con salida HDMI directa de la RTX 5080 al Smart Monitor Samsung 4K.
+              </div>
+            </div>
+
+            <!-- Foto 5 -->
+            <div class="photo-card">
+              <div class="photo-wrapper">
+                <img src="assets/fotos/05_vm101_ubuntu_cloudpanel.jpg" alt="VM 101 Ubuntu Server CloudPanel">
+                <span class="photo-badge">05 · VM 101 CloudPanel</span>
+              </div>
+              <div class="photo-caption">
+                <strong>VM 101 Ubuntu Server 24.04:</strong> Despliegue de la pila CloudPanel con Nginx, MariaDB 11.4, Redis y QEMU Guest Agent activo.
+              </div>
+            </div>
+
+            <!-- Foto 6 -->
+            <div class="photo-card">
+              <div class="photo-wrapper">
+                <img src="assets/fotos/06_auditoria_nodo_proxmox.jpg" alt="Auditoría Nodo Proxmox">
+                <span class="photo-badge">06 · Auditoría Nodo</span>
+              </div>
+              <div class="photo-caption">
+                <strong>Auditoría de Recursos en Proxmox GUI:</strong> Monitorización de uso de CPU Intel Core Ultra, consumo de memoria RAM DDR5 y rendimiento del pool ZFS.
+              </div>
+            </div>
+
+            <!-- Foto 7 -->
+            <div class="photo-card">
+              <div class="photo-wrapper">
+                <img src="assets/fotos/07_servicios_activos_pve.jpg" alt="Servicios Activos PVE">
+                <span class="photo-badge">07 · Servicios PVE</span>
+              </div>
+              <div class="photo-caption">
+                <strong>Verificación de Demonios del Sistema:</strong> Inspección de estado de servicios pve-cluster, pvedaemon, pveproxy y corosync en la consola de gestión.
+              </div>
+            </div>
+
+            <!-- Foto 8 -->
+            <div class="photo-card">
+              <div class="photo-wrapper">
+                <img src="assets/fotos/08_inferencia_ia_rtx5080.jpg" alt="Inferencia IA LMStudio">
+                <span class="photo-badge">08 · Inferencia IA</span>
+              </div>
+              <div class="photo-caption">
+                <strong>Inferencia de Modelos con LM Studio:</strong> Carga de Google Gemma 4 sobre los 16 GB GDDR7 de la RTX 5080 alcanzando más de 85 tokens/s.
+              </div>
+            </div>
+
+            <!-- Foto 9 -->
+            <div class="photo-card">
+              <div class="photo-wrapper">
+                <img src="assets/fotos/09_drivers_nvidia_studio_vm.jpg" alt="Drivers NVIDIA Studio en VM">
+                <span class="photo-badge">09 · Driver Studio</span>
+              </div>
+              <div class="photo-caption">
+                <strong>Validación de Driver NVIDIA Studio:</strong> Reconocimiento pleno de la RTX 5080 en el Administrador de Dispositivos sin código 43.
+              </div>
+            </div>
+
+            <!-- Foto 10 -->
+            <div class="photo-card">
+              <div class="photo-wrapper">
+                <img src="assets/fotos/10_aprendices_virtualizacion_ambiente205.jpg" alt="Aprendices en el Ambiente 205">
+                <span class="photo-badge">10 · Aprendices SENA</span>
+              </div>
+              <div class="photo-caption">
+                <strong>Aprendices del Centro Minero en Práctica:</strong> Sesión formativa y operación directa de las estaciones de trabajo con telemetría de virtualización en el Ambiente 205.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pager-buttons">
+          <button class="btn btn-secondary btn-pager" data-target="simulador_cli">← Volver a Terminal CLI</button>
+          <button class="btn btn-primary btn-pager" data-target="evaluacion">Continuar a Evaluación & Certificación →</button>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SECCIÓN: EVALUACIÓN GAMIFICADA & CERTIFICADO SCORM
+           =================================================================== -->
+      <section id="evaluacion" class="content-section">
+        <div class="section-header">
+          <span class="badge-chip badge-proxmox">Evaluación de Competencias</span>
+          <h2 style="font-size: 1.6rem; color: var(--text-primary); margin: 6px 0;">Cuestionario Gamificado & Certificación Virtual</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Demuestra tus competencias técnicas sobre sistemas operativos, virtualización bare-metal y GPU passthrough.</p>
+        </div>
+
+        <!-- Contenedor dinámico inyectado por SenaQuizEngine -->
+        <div id="quizContainer"></div>
+
+        <div class="pager-buttons" style="margin-top: 24px;">
+          <button class="btn btn-secondary btn-pager" data-target="galeria">← Volver a Galería</button>
+          <button class="btn btn-primary btn-pager" data-target="glosario">Continuar a Glosario Técnico →</button>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SECCIÓN: GLOSARIO TÉCNICO ESPECIALIZADO
+           =================================================================== -->
+      <section id="glosario" class="content-section">
+        <div class="section-header">
+          <span class="badge-chip badge-debian">Terminología Técnica</span>
+          <h2 style="font-size: 1.6rem; color: var(--text-primary); margin: 6px 0;">Glosario Técnico Especializado</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Definiciones normativas y técnicas de sistemas operativos, hipervisores y redes.</p>
+        </div>
+
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">🔍</div>
+              <div>
+                <h3 class="card-title">Buscador de Términos en Tiempo Real</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Escribe cualquier concepto para filtrar instantáneamente el glosario</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <input type="text" id="glossarySearch" placeholder="Escribe para buscar (ej: IOMMU, KVM, vmbr0, VFIO, CloudPanel)..." 
+                   style="width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.95rem; background: var(--bg-surface); color: var(--text-primary); outline: none;">
+          </div>
+
+          <div class="glossary-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+            <div class="glossary-item" style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <h4 style="color: var(--sena-green-dark); margin: 0 0 6px;">IOMMU (Intel VT-d / AMD-Vi)</h4>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">Unidad de gestión de memoria de entrada/salida que traduce direcciones DMA de periféricos físicos en direcciones de memoria virtual de las VMs con aislamiento criptográfico de bus.</p>
+            </div>
+
+            <div class="glossary-item" style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <h4 style="color: var(--sena-green-dark); margin: 0 0 6px;">KVM (Kernel-based Virtual Machine)</h4>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">Módulo del kernel Linux que transforma al sistema operativo en un hipervisor de tipo 1 (bare-metal) utilizando extensiones de virtualización del procesador.</p>
+            </div>
+
+            <div class="glossary-item" style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <h4 style="color: var(--sena-green-dark); margin: 0 0 6px;">VFIO (Virtual Function I/O)</h4>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">Marco de controladores del kernel que permite transferir el control directo y seguro de dispositivos PCIe a aplicaciones de espacio de usuario como QEMU.</p>
+            </div>
+
+            <div class="glossary-item" style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <h4 style="color: var(--sena-green-dark); margin: 0 0 6px;">vmbr0 (Linux Bridge)</h4>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">Puente virtual de software de capa 2 que actúa como un switch Ethernet virtual, uniendo la interfaz física del servidor con las interfaces de red virtuales de las VMs.</p>
+            </div>
+
+            <div class="glossary-item" style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <h4 style="color: var(--sena-green-dark); margin: 0 0 6px;">GPU Passthrough</h4>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">Técnica de virtualización que asigna una tarjeta gráfica física completa en exclusividad a una máquina virtual, otorgando rendimiento 3D e inferencia IA al 100% nativo.</p>
+            </div>
+
+            <div class="glossary-item" style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <h4 style="color: var(--sena-green-dark); margin: 0 0 6px;">QEMU Guest Agent</h4>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">Demonio auxiliar que se instala en el sistema operativo invitado para sincronizar reloj, consultar IPs activas, ejecutar congelamiento de disco (quiesce) y permitir apagados limpios.</p>
+            </div>
+
+            <div class="glossary-item" style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <h4 style="color: var(--sena-green-dark); margin: 0 0 6px;">CloudPanel</h4>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">Panel de administración de servidores web de última generación optimizado para PHP, Node.js y Python, integrando Nginx, MariaDB y Redis con bajo consumo de memoria.</p>
+            </div>
+
+            <div class="glossary-item" style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <h4 style="color: var(--sena-green-dark); margin: 0 0 6px;">Netplan</h4>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">Utilidad de configuración de red declarativa en formato YAML implementada en sistemas Ubuntu modernos para controlar renderizadores systemd-networkd o NetworkManager.</p>
+            </div>
+
+            <div class="glossary-item" style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <h4 style="color: var(--sena-green-dark); margin: 0 0 6px;">OpenZFS 2.3</h4>
+              <p style="font-size: 0.86rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">Sistema de archivos y administrador de volúmenes combinados de nivel empresarial que ofrece instantáneas atómicas (snapshots), compresión en tiempo real y verificación de integridad criptográfica.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pager-buttons">
+          <button class="btn btn-secondary btn-pager" data-target="evaluacion">← Volver a Evaluación</button>
+          <button class="btn btn-primary btn-pager" data-target="sintesis_creditos">Continuar a Síntesis & Créditos →</button>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SECCIÓN: SÍNTESIS, REFERENCIAS APA 7 & CRÉDITOS
+           =================================================================== -->
+      <section id="sintesis_creditos" class="content-section">
+        <div class="section-header">
+          <span class="badge-chip badge-proxmox">Cierre Pedagógico</span>
+          <h2 style="font-size: 1.6rem; color: var(--text-primary); margin: 6px 0;">Síntesis Conceptual, Referencias & Créditos</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Consolidación de aprendizajes, bibliografía académica APA 7 y créditos institucionales del proyecto.</p>
+        </div>
+
+        <!-- Síntesis Conceptual -->
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">🧠</div>
+              <div>
+                <h3 class="card-title">Síntesis Conceptual de la Infraestructura de Virtualización</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Puntos clave para el ejercicio profesional del técnico y tecnólogo SENA</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="callout callout-success">
+              <div class="callout-icon">📌</div>
+              <div class="callout-body">
+                <div class="callout-title">Ventajas del Hipervisor Bare-Metal:</div>
+                <div class="callout-text">
+                  La eliminación de la capa del sistema operativo anfitrión en Proxmox VE 9 garantiza un aprovechamiento del silicio al 98.5%, permitiendo que una estación de trabajo moderna funcione simultáneamente como nodo de Inteligencia Artificial local y como servidor corporativo de alta disponibilidad.
+                </div>
+              </div>
+            </div>
+            <div class="callout callout-info">
+              <div class="callout-icon">📌</div>
+              <div class="callout-body">
+                <div class="callout-title">Desvío de Silicio con VFIO:</div>
+                <div class="callout-text">
+                  El uso riguroso de parámetros GRUB (<code>intel_iommu=on iommu=pt video=efifb:off</code>), la asignación de Vendor/Device IDs (<code>10de:2c02</code>) a <code>vfio-pci</code> y la desactivación del display emulado (<code>vga: none</code>) resuelven de raíz los cuelgues de pantalla y el código de error 43 en Windows 11.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Referencias Bibliográficas APA 7 -->
+        <div class="sena-card">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">📚</div>
+              <div>
+                <h3 class="card-title">Referencias Bibliográficas (Norma APA 7.ª Edición)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Fuentes técnicas oficiales consultadas para el diseño de la OVA</p>
+              </div>
+            </div>
+          </div>
+
+          <ul style="font-size: 0.88rem; line-height: 1.8; color: var(--text-secondary); padding-left: 20px;">
+            <li>Canonical Ltd. (2024). <em>Ubuntu Server Guide: Network configuration with Netplan</em>. Canonical Documentation. https://ubuntu.com/server/docs/configuring-networks</li>
+            <li>Debian Project. (2025). <em>Debian GNU/Linux 13 (Trixie) System Administration and Kernel Manual</em>. Software in the Public Interest. https://www.debian.org/doc/</li>
+            <li>Linux Foundation. (2024). <em>VFIO - Virtual Function I/O: Kernel-based userspace driver framework</em>. The Linux Kernel Archives. https://docs.kernel.org/driver-api/vfio.html</li>
+            <li>NVIDIA Corporation. (2024). <em>NVIDIA Virtual GPU Software User Guide: PCIe Passthrough and Studio Driver Architecture</em>. NVIDIA Developer Resources. https://docs.nvidia.com/grid/</li>
+            <li>Proxmox Server Solutions GmbH. (2025). <em>Proxmox VE 9.x Administration Guide: Hardware virtualization, PCI Passthrough and OpenZFS storage</em>. Proxmox Community. https://pve.proxmox.com/pve-docs/</li>
+            <li>Servicio Nacional de Aprendizaje – SENA. (2025). <em>Proyecto SENNOVA MGA_2025_35_294: Modernización del Ambiente 205 para Ambientes de Aprendizaje con TIC</em>. Centro Minero, Regional Boyacá.</li>
+          </ul>
+        </div>
+
+        <!-- Créditos Institucionales -->
+        <div class="sena-card" style="border-top: 4px solid var(--sena-green);">
+          <div class="sena-card-header">
+            <div class="card-title-group">
+              <div class="card-icon">🏛️</div>
+              <div>
+                
+
+          <div style="background: var(--sena-green-subtle); border-left: 4px solid var(--sena-green); padding: 12px 18px; border-radius: var(--radius-md); margin-bottom: 20px; font-weight: 600; color: var(--sena-green-dark); font-size: 0.95rem;">
+            👨‍🏫 <strong>Autor y Líder Técnico:</strong> Diego Alonso Ojeda Medina - Instructor Sistemas - Centro Minero
+          </div>
+
+          <div class="grid-3" style="font-size: 0.9rem; line-height: 1.7;">
+            <div>
+              <strong style="color: var(--sena-green-dark);">Regional Boyacá:</strong><br>
+              Centro Minero (Sogamoso)<br>
+              Subdirección de Centro<br>
+              Coordinación de Formación Profesional
+            </div>
+            <div>
+              <strong style="color: var(--sena-blue);">Línea SENNOVA:</strong><br>
+              Semillero de Investigación ARTICA<br>
+              Grupo de Investigación GICEMIN<br>
+              Proyecto MGA_2025_35_294
+            </div>
+            <div>
+              <strong style="color: var(--text-primary);">Programas Académicos:</strong><br>
+              Técnico en Sistemas Teleinformáticos (233108)<br>
+              Tecnólogo en Gestión de Redes de Datos (228183)<br>
+              Vigencia: 2026
+            </div>
+          </div>
+        </div>
+
+        <div class="pager-buttons">
+          <button class="btn btn-secondary btn-pager" data-target="glosario">← Volver a Glosario</button>
+          <button class="btn btn-primary btn-pager" data-target="intro">Volver al Inicio de la OVA ↺</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Pie de Página Institucional -->
+  <footer class="sena-footer">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; max-width: 1300px; margin: 0 auto;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <img src="assets/logos/sena-white.svg" alt="SENA Blanco" style="height: 32px;">
+        <span style="font-size: 0.85rem;">Servicio Nacional de Aprendizaje SENA · Regional Boyacá · Centro Minero</span>
+      </div>
+      <div style="font-size: 0.78rem; opacity: 0.8;">Proyecto SENNOVA MGA_2025_35_294 · Ambiente 205 · Objeto Virtual de Aprendizaje (SCORM 1.2)</div>
+    </div>
+  </footer>
+
+  <!-- Scripts del Ecosistema SENA -->
+  <script src="js/scorm.js"></script>
+  <script src="js/evaluacion.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/terminal-sim.js"></script>
+
+  <!-- Inicialización del Cuestionario Gamificado -->
+  <script>
+    // =========================================================================
+    // 1. BANCO DE 10 PREGUNTAS TÉCNICAS PARA SENA QUIZ ENGINE
+    // =========================================================================
+    const QUIZ_QUESTIONS = [
+      {
+        pregunta: "¿Cuál es la principal ventaja técnica de un hipervisor de Tipo 1 (bare-metal) como KVM en Proxmox VE 9 frente a soluciones de Tipo 2 como VirtualBox o VMware Workstation?",
+        opciones: [
+          "No requiere energía eléctrica para mantener las máquinas encendidas",
+          "Se ejecuta directamente sobre el hardware en Anillo 0 con un overhead de CPU inferior al 1.5% y acceso DMA nativo a buses PCIe",
+          "Solo puede ejecutar sistemas operativos Windows de 32 bits",
+          "Requiere obligatoriamente un sistema operativo anfitrión de escritorio para gestionar la interfaz gráfica"
+        ],
+        correcta: 1,
+        feedback: "Los hipervisores bare-metal (Tipo 1) se ejecutan en modo VMX Root directamente sobre el silicio del procesador, eliminando la sobrecarga y el jitter del sistema operativo anfitrión, lo que permite latencias mínimas y passthrough real de hardware."
+      },
+      {
+        pregunta: "¿Sobre qué distribución base de Linux y qué generación de kernel empresarial está estructurado el sistema operativo Proxmox VE 9 en el Ambiente 205?",
+        opciones: [
+          "Red Hat Enterprise Linux 7 con kernel 3.10",
+          "Debian 13 (Trixie) con kernel Linux 6.14.x optimizado para arquitecturas híbridas Intel Core Ultra y AMD Zen 5",
+          "Windows Server 2022 con subsistema WSL2",
+          "Alpine Linux con kernel hardened 4.19"
+        ],
+        correcta: 1,
+        feedback: "Proxmox VE 9 adopta Debian 13 (Trixie) como base y un kernel Linux 6.14.x con parches específicos de PVE, garantizando compatibilidad con buses PCIe 5.0, extensiones de seguridad TPM 2.0 y planificadores híbridos para P-cores y E-cores."
+      },
+      {
+        pregunta: "En una instalación de Proxmox VE en laboratorios académicos sin licencia comercial de pago, ¿cuál repositorio oficial debe configurarse en /etc/apt/sources.list.d/ para recibir actualizaciones estables?",
+        opciones: [
+          "pve-enterprise (requiere suscripción paga por socket)",
+          "pve-no-subscription (repositorio oficial comunitario de libre acceso)",
+          "ubuntu-universe-backports",
+          "debian-experimental-unstable"
+        ],
+        correcta: 1,
+        feedback: "El repositorio 'pve-no-subscription' es la fuente oficial recomendada para centros de formación y pruebas; ofrece todos los paquetes y parches probados sin exigir clave de autenticación empresarial."
+      },
+      {
+        pregunta: "En la infraestructura de red virtual del servidor Proxmox del Ambiente 205, ¿cuál es la función de la interfaz virtual bridge vmbr0?",
+        opciones: [
+          "Es un servidor DHCP que asigna IPs inalámbricas a los teléfonos inteligentes del aula",
+          "Es un puente virtual de software de capa 2 que conmuta el tráfico de las VMs con la interfaz física (enp5s0) y hospeda la IP 10.27.120.250/24",
+          "Es un cortafuegos físico que bloquea todo el tráfico UDP",
+          "Es una interfaz loopback que solo permite comunicación interna dentro de la misma máquina virtual"
+        ],
+        correcta: 1,
+        feedback: "El bridge vmbr0 funciona como un conmutador Ethernet virtual. La tarjeta física actúa como esclava sin IP, mientras vmbr0 centraliza la IP de administración 10.27.120.250 y conecta los adaptadores virtuales VirtIO de las VMs hacia el switch de red."
+      },
+      {
+        pregunta: "¿Cuáles parámetros deben añadirse a GRUB_CMDLINE_LINUX_DEFAULT en /etc/default/grub para activar la virtualización dirigida IOMMU en el procesador Intel Core Ultra?",
+        opciones: [
+          "nomodeset quiet single",
+          "intel_iommu=on iommu=pt video=efifb:off,vesafb:off",
+          "acpi=off noapic nolapic",
+          "pci=nomsi disable_ipv6=1"
+        ],
+        correcta: 1,
+        feedback: "'intel_iommu=on' activa la unidad de traducción DMAR; 'iommu=pt' establece el modo passthrough óptimo para evitar degradación de DMA; y 'video=efifb:off' desvincula el framebuffer UEFI para que la GPU RTX 5080 quede totalmente libre."
+      },
+      {
+        pregunta: "En el archivo /etc/modprobe.d/vfio.conf, ¿a qué componentes físicos del Ambiente 205 corresponden los identificadores hexadecimales '10de:2c02' y '10de:22e9'?",
+        opciones: [
+          "Al disco SSD Samsung 990 PRO y a la tarjeta de red Wi-Fi 7",
+          "A la tarjeta gráfica NVIDIA GeForce RTX 5080 (video) y a su controlador de audio de alta definición HDMI/DP",
+          "Al procesador Intel Core Ultra 7 y a la memoria RAM DDR5 Corsair",
+          "A la fuente de poder MSI MAG 850W y al sistema de refrigeración líquida"
+        ],
+        correcta: 1,
+        feedback: "El código de fabricante (Vendor ID) 10de pertenece a NVIDIA Corporation; 2c02 identifica a la GPU GeForce RTX 5080 de 16 GB y 22e9 identifica a su códec de audio HD integrado para salidas HDMI/DisplayPort."
+      },
+      {
+        pregunta: "¿Qué configuración en la VM 100 (Windows 11) soluciona el problema de pantalla congelada (freeze) y permite salida de video directa por los puertos físicos de la tarjeta?",
+        opciones: [
+          "Configurar display como 'vga: none' (sin pantalla emulada) y asignar la RTX 5080 con la opción Primary GPU ('x-vga=1')",
+          "Aumentar la memoria de video virtual a 1024 MB en modo SPICE",
+          "Cambiar la tarjeta a una ranura PCI de 32 bits antigua",
+          "Desconectar el cable de alimentación 12V-2x6 de la tarjeta de video"
+        ],
+        correcta: 0,
+        feedback: "Al desactivar la pantalla emulada ('vga: none') y fijar 'x-vga=1', el firmware UEFI de la VM utiliza directamente la BIOS gráfica VBIOS de la RTX 5080, evitando el conflicto de recursos BAR y enviando la señal directa al Smart Monitor Samsung."
+      },
+      {
+        pregunta: "¿Por qué es mandatorio incluir los módulos 'nouveau' y 'nvidia' en /etc/modprobe.d/pve-blacklist.conf en el servidor Proxmox?",
+        opciones: [
+          "Para ahorrar espacio en el disco duro SSD",
+          "Para evitar que el kernel del host tome posesión de la GPU RTX 5080, permitiendo que el controlador vfio-pci la capture de forma exclusiva",
+          "Porque Linux no soporta tarjetas gráficas de ninguna marca",
+          "Para obligar al monitor a funcionar únicamente en resolución 640x480"
+        ],
+        correcta: 1,
+        feedback: "Si el kernel Debian carga nouveau o nvidia_drm, el dispositivo queda bloqueado por el anfitrión y QEMU no puede solicitar el desvío por VFIO a la máquina virtual, generando errores de dispositivo ocupado (Device or resource busy)."
+      },
+      {
+        pregunta: "¿Qué paquete de servicios está desplegado en la VM 101 (Ubuntu Server 24.04 LTS) para soportar las prácticas de servicios web y base de datos?",
+        opciones: [
+          "CloudPanel integrando Nginx como Reverse Proxy, MariaDB 11.4 optimizada, caché Redis y QEMU Guest Agent",
+          "Microsoft Internet Information Services (IIS) sobre Windows 98",
+          "Servidor Apache Tomcat 5.5 con Java 6",
+          "Únicamente un servidor de juegos Minecraft sin base de datos"
+        ],
+        correcta: 0,
+        feedback: "La VM 101 implementa la arquitectura CloudPanel de alta eficiencia con Nginx, el motor relacional moderno MariaDB 11.4 con buffers en memoria, Redis para caché de sesiones y el agente de telemetría QEMU."
+      },
+      {
+        pregunta: "¿Cuál es la función fundamental del servicio 'qemu-guest-agent' instalado en los sistemas operativos de las máquinas virtuales?",
+        opciones: [
+          "Minar criptomonedas en segundo plano cuando el servidor está inactivo",
+          "Proveer un canal de comunicación VirtIO bidireccional con el hipervisor para consultar IPs en tiempo real, sincronizar reloj, ejecutar apagados ACPI limpios y congelar el sistema de archivos durante backups",
+          "Acelerar la velocidad del ventilador del chasis mediante inteligencia artificial",
+          "Formatear automáticamente los discos duros cada 24 horas"
+        ],
+        correcta: 1,
+        feedback: "El QEMU Guest Agent es el puente de gestión entre el hipervisor y el sistema operativo invitado. Permite gestionar snapshots consistentes (VSS / fsfreeze), verificar direccionamiento IP sin acceder por SSH o RDP y apagar la VM ordenadamente sin pérdida de datos."
+      }
+    ];
+
+    // Inicializar Motor de Evaluación SENA
+    document.addEventListener('DOMContentLoaded', () => {
+      new SenaQuizEngine({
+        containerId: 'quizContainer',
+        questions: QUIZ_QUESTIONS,
+        passingScore: 70,
+        ovaCode: 'OVA-02',
+        ovaTitle: 'Sistemas Operativos y Virtualización en el Ambiente 205'
+      });
+    });
+  </script>
+</body>
+</html>
